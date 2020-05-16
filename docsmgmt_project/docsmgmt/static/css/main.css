@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body{
 	background-color: hsl(0, 0%, 98%);
 	font-family: 'Sarabun', sans-serif;
@@ -52,8 +53,8 @@ h1,h2,h3,h4,h5,h6{
 	margin-top: 10px;
 }
 
-.btn{
-	border-radius: 0;
+.btn-space {
+    margin-right: 50px;
 }
 
 .row-image{

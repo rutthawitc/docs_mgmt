@@ -17,7 +17,7 @@ for (i = 0; i < acceptBtns.length; i++) {
 
 function acceptedDocument(documentId, action){
     console.log('User logged in OK')
-    var url = '/updateaccepted/'
+    var url = '/accepted/'
     fetch(url, {
         method: 'POST',
         headers:{

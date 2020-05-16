@@ -1,18 +1,17 @@
 {% extends 'docsmgmt/base.html' %}
-{% load static %}
 {% block content %}
 <div class='container'>
-<h3>เอกสารในหน่วยงาน</h3>
+<h3>เอกสารภายใน{{request.user.profile.dept}}</h3>
 <hr>
 <h5>ทั้งหมด {{ docs_dept.count }} ฉบับ</h5>
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th scope="col">เลขที่</th>
         <th scope="col">หัวข้อ</th>
         <th scope="col">ประเภท</th>
         <th scope="col">วันที่</th>
-        <th scope="col">หน่วยงาน</th>
+        <th scope="col">#</th>
       </tr>
     </thead>
     {% for doc in docs_dept %}
@@ -22,7 +21,10 @@
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
         <td>{{doc.doc_date|date:'d/m/Y'}}</td>
-        <td>{{doc.doc_dept}}</td>
+        <td>
+            <button type="button" class="btn btn-success btn-sm accept-doc mr-1" data-action="accept" data-document="{{doc.id}}">ทราบ</button>
+            <button type="button" class="btn btn-primary btn-sm">ตอบ</button>
+        </td>
       </tr>
     </tbody>
     {% endfor %}
@@ -30,14 +32,14 @@
 <!--เอกสารทั่วไป-->
 <hr>
 <h5>เอกสารทั่วไป {{ all_docs.count }} ฉบับ</h5>
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th scope="col">เลขที่</th>
         <th scope="col">หัวข้อ</th>
         <th scope="col">ประเภท</th>
         <th scope="col">วันที่</th>
-        <th scope="col">หน่วยงาน</th>
+        <th scope="col">#</th>
       </tr>
     </thead>
     {% for doc in all_docs %}
@@ -47,7 +49,10 @@
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
         <td>{{doc.doc_date|date:'d/m/Y'}}</td>
-        <td>{{doc.doc_dept}}</td>
+        <td>
+            <button type="button" class="btn btn-success btn-sm mr-1">ทราบ</button>
+            <button type="button" class="btn btn-primary btn-sm">ตอบ</button>
+        </td>
       </tr>
     </tbody>
     {% endfor %}
