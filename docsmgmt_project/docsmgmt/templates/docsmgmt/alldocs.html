@@ -1,4 +1,5 @@
 {% extends 'docsmgmt/base.html' %}
+{% load static %}
 {% block content %}
 <div class='container'>
 <h1>All Docs</h1>
@@ -11,15 +12,17 @@
         <th scope="col">หัวข้อ</th>
         <th scope="col">ประเภท</th>
         <th scope="col">วันที่</th>
+        <th scope="col">หน่วยงาน</th>
       </tr>
     </thead>
     {% for doc in docs %}
     <tbody>
       <tr>
-        <th scope="row">{{doc.doc_mtno}}</th>
+        <td>{{doc.doc_mtno}}</td>
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
         <td>{{doc.doc_date|date:'d/m/Y'}}</td>
+        <td>{{doc.doc_dept}}</td>
       </tr>
     </tbody>
     {% endfor %}

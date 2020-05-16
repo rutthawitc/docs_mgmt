@@ -5,6 +5,7 @@ import datetime
 
 # Create your models here.
 class UserDepartment(models.Model):
+    DEFAULT_PK=3
     department_code = models.CharField(max_length=35)
     department_title = models.CharField(max_length=150)
     department_desc = models.CharField(max_length=150, blank=True, null=True)
@@ -35,6 +36,7 @@ class Documents(models.Model):
     doc_title = models.CharField(max_length=150)
     doc_desc = models.CharField(max_length=150, blank=True, null=True)
     doc_date = models.DateField(auto_now=False, null=True, blank=True)
+    doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, default=UserDepartment.DEFAULT_PK)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
