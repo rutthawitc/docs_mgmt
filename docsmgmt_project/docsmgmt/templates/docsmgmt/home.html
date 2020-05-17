@@ -1,1 +1,17 @@
-<H1>Home</H1>
+{% extends 'docsmgmt/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+<div class="row">
+    <div class="col-4">
+        <img class="thumbnail" src="{% static 'images/sign-document-64.png' %}">
+        <div class="box-element">
+            <h6><strong>เอกสารที่ยังไม่ได้อ่าน</strong></h6>
+            <hr>
+            <a class="btn btn-outline-success" href="#">View</a>
+
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

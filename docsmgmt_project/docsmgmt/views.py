@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from .models import Documents, UserProfile, UserDepartment
+from .models import Documents, UserProfile, UserDepartment, Accepted
 import json
 from django.http import JsonResponse
+from django.db.models import Q
 
 # Create your views here.
 def Home(request):
@@ -10,19 +11,61 @@ def Home(request):
 
 def ShowAllDocuments(request):
     docs = Documents.objects.all()
-    error ={"No data!"}
+    error ="ไม่มีเอกสารใหม่"
     context = {'docs':docs, 'error':error}
     return render(request, 'docsmgmt/alldocs.html', context)
 
-def ShowDocsByDept(request):
-    docs_dept = Documents.objects.filter(doc_dept=request.user.profile.dept)
-    all_docs = Documents.objects.filter(doc_dept__id=3)
+#Show Unreaded Documents filter by Current User ID! 
+def ShowUnreadDocs(request):
+    #Find Readed (Accepted Documents) - QuerySet
+    readed_docs = Accepted.objects.filter(
+        Q(is_accepted=True) &
+        Q(user__user_id=request.user.profile.id)
+    ).values_list('doc_no',flat=True)
+    
+    #Filter Unread (UnAccepted) from Readed Resualt
+    #Filter by userID
+    #unread_docs = Documents.objects.exclude(id__in=readed_docs)
+
+    #Test
+    unread_docs = Documents.objects.filter(
+        Q(doc_dept=request.user.profile.dept) |
+        Q(doc_dept__id=3)
+    ).exclude(id__in=readed_docs)
+
+    error ="ไม่มีเอกสารใหม่"
+    context = {'error':error, 'unread_docs':unread_docs }
+    return render(request, 'docsmgmt/unread.html', context)
+
+#Show Accepted Documents filter by User ID! 
+def ShowAcceptedDocs(request):
+    #Find Readed - QuerySet
+    readed_docs = Accepted.objects.filter(
+        Q(is_accepted=True) &
+        Q(user__user_id=request.user.profile.id)
+    )
 
     error ={"No data!"}
-    context = {'all_docs':all_docs, 'docs_dept':docs_dept, 'error':error}
+    context = {'error':error, 'readed_docs':readed_docs }
+    return render(request, 'docsmgmt/showaccepted.html', context)
+
+
+def ShowDocsByDept(request):
+    #Original filter
+    #docs_dept = Documents.objects.filter(doc_dept=request.user.profile.dept)
+    #all_docs = Documents.objects.filter(doc_dept__id=3)
+
+    #Complete -QuerySet
+    docs_dept = Documents.objects.filter(
+        Q(doc_dept=request.user.profile.dept) |
+        Q(doc_dept__id=3)
+    )
+
+    error ={"No data!"}
+    context = {'docs_dept':docs_dept, 'error':error}
     return render(request, 'docsmgmt/docsbydept.html', context)
 
-def UpdateAccepted(request):
+def DocAccepted(request):
     data = json.loads(request.body)
     documentId = data['documentId']
     action = data['action']
@@ -33,11 +76,17 @@ def UpdateAccepted(request):
     user = request.user.profile
     document = Documents.objects.get(id=documentId)
 
-    #accepted = DocAccepted.objects.create(user=user, docs=document)
-    #accepted.save()
+    accepted = Accepted.objects.create(user=user, doc_no=document, is_accepted=True)
+    accepted.save()
 
     print('User:', user)
     print('Document ID:', document)
 
     return JsonResponse('Accepted', safe=False)
+
+def DocDetail(request, doc_pk):
+    doc = Documents.objects.get(id=doc_pk)
+
+    context = {'doc':doc}
+    return render(request, 'docsmgmt/docdetail.html', context)
 

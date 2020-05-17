@@ -1,37 +1,45 @@
 {% extends 'docsmgmt/base.html' %}
-{% load static %}
 {% block content %}
 <div class='container'>
 <h3>เอกสารภายใน{{request.user.profile.dept}}</h3>
 <hr>
-{{ docs.count }}
-<h5>ทั้งหมด {{ docs_dept.count }} ฉบับ</h5>
+{% if unread_docs %}
+<h4>เอกสารทั้งหมด {{ unread_docs.count }} ฉบับ</h4>
 <table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th scope="col">เลขที่</th>
         <th scope="col">หัวข้อ</th>
         <th scope="col">ประเภท</th>
+        <th scope="col">หน่วยงาน</th>
         <th scope="col">วันที่</th>
         <th scope="col">#</th>
       </tr>
     </thead>
-    {% for doc in docs_dept %}
+    {% for doc in unread_docs %}
     <tbody>
       <tr>
         <td>{{doc.doc_mtno}}</td>
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
+        <td>{{doc.doc_dept}}</td>
         <td>{{doc.doc_date|date:'d/m/Y'}}</td>
         <td>
             <button type="button" class="btn btn-success btn-sm accept-doc mb-1 mb-md-1" data-action="accept" data-document="{{doc.id}}">ทราบ</button>
             <a href="{% url 'docdetail' doc.id %}" class="btn btn-info btn-sm mb-1 mb-md-1" role="button">รายละเอียด</a>
-            <button type="button" class="btn btn-primary btn-sm mb-1 mb-md-1">บันทึกเพิ่มเติม</button>
+            <button type="button" class="btn btn-primary btn-sm mb-1 mb-md-1">ตอบ</button>
         </td>
       </tr>
     </tbody>
     {% endfor %}
   </table>
+  {% else %}
+  <div class="alert alert-success text-center element-font" role="alert">
+     {{ error }}
+  </div>
+<a role="button" class="btn btn-primary" href="{% url 'home' %}">กลับหน้าหลัก</a>
+</div>
+{% endif %}
 </div>
 {% endblock %}
 

@@ -82,6 +82,7 @@ class Accepted(models.Model):
     doc_no = models.ForeignKey(Documents, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     is_accepted = models.BooleanField(default=False)
+    accepted_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return self.doc_no.doc_title

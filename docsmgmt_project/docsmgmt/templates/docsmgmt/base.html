@@ -36,6 +36,12 @@
       }
       var csrftoken = getToken('csrftoken');
     </script>
+    <script>
+      function goBack() {
+        window.history.back();
+          }
+    </script>
+
     <title>edocument.</title>
   </head>
   <body>
@@ -53,17 +59,17 @@
             <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">Unread</a>
+            <a class="nav-link" href="{% url 'unread' %}">Unread</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">Accepted</a>
+            <a class="nav-link" href="{% url 'showaccepted' %}">Accepted</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'showalldocs' %}">All Documents</a>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <img src="{% static 'images/icons8-person-24.png' %}"/><h5><small>&nbsp;&nbsp;{{request.user.profile.title}}</small></h5>&nbsp;&nbsp;&nbsp;&nbsp;
+        <form class="form-inline my-2 my-lg-0 nav-font">
+          <img src="{% static 'images/icons8-person-24.png' %}" height="20"/><h8>&nbsp;&nbsp;{{request.user.profile.title}}</h8>&nbsp;&nbsp;&nbsp;&nbsp;
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 
