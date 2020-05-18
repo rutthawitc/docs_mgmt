@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import datetime
+import os
+from uuid import uuid4
 
 # Create your models here.
 class UserDepartment(models.Model):
@@ -29,7 +31,22 @@ class RefDocumentType(models.Model):
     def __str__(self):
         return self.type_desc
 
+#Change file name on upload function
+def path_and_rename(instance, filename):
+    upload_to = 'alldocuments'
+    ext = filename.split('.')[-1]
+    # get filename
+    if instance.pk:
+        filename = '{}.{}'.format(instance.pk, ext)
+    else:
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
+
 class Documents(models.Model):
+    class Meta:
+        verbose_name_plural = "1. Documents"
     type_code = models.ForeignKey(RefDocumentType, on_delete=models.CASCADE)
     access_count = models.IntegerField(null=True, blank=True)
     doc_mtno = models.CharField(max_length=50,blank=True, null=True)
@@ -37,10 +54,19 @@ class Documents(models.Model):
     doc_desc = models.CharField(max_length=150, blank=True, null=True)
     doc_date = models.DateField(auto_now=False, null=True, blank=True)
     doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, default=UserDepartment.DEFAULT_PK)
+    doc_file = models.FileField(upload_to=path_and_rename, max_length=255, null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.doc_title
+    
+    @property
+    def fileURL(self):
+        try:
+            url = self.doc_file.url
+        except:
+                url = '#'
+        return url
 
 class DocumentSections(models.Model):
     doc_no = models.ForeignKey(Documents, on_delete=models.CASCADE)
@@ -87,4 +113,4 @@ class Accepted(models.Model):
     def __str__(self):
         return self.doc_no.doc_title
 
-
+ 

@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Documents, UserProfile, UserDepartment, Accepted
 from django.http import JsonResponse
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import HttpResponseRedirect
 from django.db.models import Q
 import json
+from django.views.generic import ListView, CreateView, UpdateView
+from django.urls import reverse_lazy
 
 # Create your views here.
 @login_required
@@ -111,7 +112,7 @@ def DocAccepted(request):
     print('Document ID:', document)
 
     return JsonResponse('Accepted', safe=False)
-    
+
 @login_required
 def DocDetail(request, doc_pk):
     doc = Documents.objects.get(id=doc_pk)
@@ -136,7 +137,10 @@ def logoutuser(request):
         logout(request)
         return HttpResponseRedirect('/login/')
 
-
+class DocumentView(CreateView):
+    model = Documents
+    fields = ('type_code', 'doc_mtno', 'doc_title', 'doc_desc', 'doc_date', 'doc_dept', 'doc_file')
+    success_url = reverse_lazy('home')
 
 
 
