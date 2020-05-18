@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs
+from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs, loginuser, logoutuser
 
 urlpatterns = [
     path('', Home, name='home'),
@@ -9,4 +9,7 @@ urlpatterns = [
     path('docdetail/<int:doc_pk>', DocDetail, name='docdetail'),
     path('unread/', ShowUnreadDocs, name='unread'),
     path('showaccepted/', ShowAcceptedDocs, name='showaccepted'),
+    path('login/', loginuser, name='loginuser'),
+    path('logout/', logoutuser, name='logoutuser'),
 ]
+

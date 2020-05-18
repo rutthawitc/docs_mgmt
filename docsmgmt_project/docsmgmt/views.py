@@ -1,20 +1,46 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Documents, UserProfile, UserDepartment, Accepted
-import json
 from django.http import JsonResponse
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.shortcuts import HttpResponseRedirect
 from django.db.models import Q
+import json
 
 # Create your views here.
+@login_required
 def Home(request):
-    context = {}
+    #show document counter on home page.
+    #readed
+    readed_docs = Accepted.objects.filter(
+        Q(is_accepted=True) &
+        Q(user__user_id=request.user.profile.id)
+    ).values_list('doc_no',flat=True)
+
+    readed_count = readed_docs.count()
+
+    #unread
+    unread_docs = Documents.objects.filter(
+        Q(doc_dept=request.user.profile.dept) |
+        Q(doc_dept__id=3)
+    ).exclude(id__in=readed_docs)
+
+    unread_count = unread_docs.count()
+
+    context = {'unread_count':unread_count, 'readed_count':readed_count}
+    print(context)
     return render(request, 'docsmgmt/home.html', context)
 
+@login_required
 def ShowAllDocuments(request):
     docs = Documents.objects.all()
     error ="ไม่มีเอกสารใหม่"
     context = {'docs':docs, 'error':error}
     return render(request, 'docsmgmt/alldocs.html', context)
 
+@login_required
 #Show Unreaded Documents filter by Current User ID! 
 def ShowUnreadDocs(request):
     #Find Readed (Accepted Documents) - QuerySet
@@ -37,6 +63,7 @@ def ShowUnreadDocs(request):
     context = {'error':error, 'unread_docs':unread_docs }
     return render(request, 'docsmgmt/unread.html', context)
 
+@login_required
 #Show Accepted Documents filter by User ID! 
 def ShowAcceptedDocs(request):
     #Find Readed - QuerySet
@@ -49,7 +76,7 @@ def ShowAcceptedDocs(request):
     context = {'error':error, 'readed_docs':readed_docs }
     return render(request, 'docsmgmt/showaccepted.html', context)
 
-
+@login_required
 def ShowDocsByDept(request):
     #Original filter
     #docs_dept = Documents.objects.filter(doc_dept=request.user.profile.dept)
@@ -65,6 +92,7 @@ def ShowDocsByDept(request):
     context = {'docs_dept':docs_dept, 'error':error}
     return render(request, 'docsmgmt/docsbydept.html', context)
 
+@login_required
 def DocAccepted(request):
     data = json.loads(request.body)
     documentId = data['documentId']
@@ -83,10 +111,39 @@ def DocAccepted(request):
     print('Document ID:', document)
 
     return JsonResponse('Accepted', safe=False)
-
+    
+@login_required
 def DocDetail(request, doc_pk):
     doc = Documents.objects.get(id=doc_pk)
 
     context = {'doc':doc}
     return render(request, 'docsmgmt/docdetail.html', context)
+
+def loginuser(request):
+    if request.method == 'GET':
+        return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm()})
+    else:
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm(), 'error':'Username and password did not match'})
+        else:
+            login(request, user)
+            return redirect('home')
+
+@login_required
+def logoutuser(request):
+    #if request.method == 'POST':
+        logout(request)
+        return HttpResponseRedirect('/login/')
+
+
+
+
+
+
+
+
+    
+
+
 
