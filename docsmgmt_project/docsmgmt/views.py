@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Documents, UserProfile, UserDepartment, Accepted
 from django.http import JsonResponse
 
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -124,11 +125,16 @@ def loginuser(request):
         return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm()})
     else:
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+
+        print(request.POST['username'])
+        print(request.POST['password'])
+        print(user)
         if user is None:
             return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm(), 'error':'Username and password did not match'})
         else:
-            login(request, user)
-            return redirect('home')
+           login(request, user)
+           return redirect('home')
+
 
 @login_required
 def logoutuser(request):

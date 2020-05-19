@@ -87,4 +87,3 @@ class Accepted(models.Model):
     def __str__(self):
         return self.doc_no.doc_title
 
-

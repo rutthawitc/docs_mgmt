@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import User, UserProfile, UserDepartment, UserSection, Documents, DocumentSections, Accepted, Comments, RefDocumentType
 
 # Register your models here.
