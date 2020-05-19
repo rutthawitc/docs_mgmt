@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs, loginuser, logoutuser
+from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs, loginuser, logoutuser, DocumentView
 
 urlpatterns = [
     path('', Home, name='home'),

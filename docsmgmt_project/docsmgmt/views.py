@@ -1,11 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Documents, UserProfile, UserDepartment, Accepted
 from django.http import JsonResponse
-<<<<<<< HEAD
 
 from django.contrib.auth.models import User
-=======
->>>>>>> master
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -132,14 +129,8 @@ def loginuser(request):
     if request.method == 'GET':
         return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm()})
     else:
-<<<<<<< HEAD
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
 
-=======
-        username_value=request.POST['username']
-        password_vlaue=request.POST['password']
-        user = authenticate(request, username=username_value, password=password_vlaue)
->>>>>>> master
         print(request.POST['username'])
         print(request.POST['password'])
         print(user)
@@ -156,7 +147,10 @@ def logoutuser(request):
         logout(request)
         return HttpResponseRedirect('/login/')
 
-
+class DocumentView(CreateView):
+    model = Documents
+    fields = ('type_code', 'doc_mtno', 'doc_title', 'doc_desc', 'doc_date', 'doc_dept', 'doc_file')
+    success_url = reverse_lazy('home')
 
 
 
