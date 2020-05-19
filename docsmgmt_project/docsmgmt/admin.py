@@ -4,6 +4,7 @@ from .models import User, UserProfile, UserDepartment, UserSection, Documents, D
 
 # Register your models here.
 class DocumentsAdmin(admin.ModelAdmin):
+    exclude = ('upload_by',)
     def save_model(self, request, obj, form, change):
         obj.upload_by = request.user.profile
         obj.save()
