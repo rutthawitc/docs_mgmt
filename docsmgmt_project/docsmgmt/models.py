@@ -73,7 +73,7 @@ class Documents(models.Model):
     doc_date = models.DateField(auto_now=False, null=True, blank=True)
     doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, default=UserDepartment.DEFAULT_PK)
     doc_file = models.FileField(upload_to=path_and_rename, max_length=255, null=True, blank=True)
-    upload_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    upload_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
