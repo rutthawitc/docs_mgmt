@@ -9,6 +9,7 @@ from django.db.models import Q
 import json
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 
 # Create your views here.
 @login_required
@@ -121,10 +122,17 @@ def DocDetail(request, doc_pk):
     return render(request, 'docsmgmt/docdetail.html', context)
 
 def loginuser(request):
+    username_value = ''
+    password_vlaue = ''
     if request.method == 'GET':
         return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm()})
     else:
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        username_value=request.POST['username']
+        password_vlaue=request.POST['password']
+        user = authenticate(request, username=username_value, password=password_vlaue)
+        print(request.POST['username'])
+        print(request.POST['password'])
+        print(user)
         if user is None:
             return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm(), 'error':'Username and password did not match'})
         else:
