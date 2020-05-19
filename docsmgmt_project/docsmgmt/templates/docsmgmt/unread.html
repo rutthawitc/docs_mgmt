@@ -1,4 +1,5 @@
 {% extends 'docsmgmt/base.html' %}
+{% load static %}
 {% block content %}
 <div class='container'>
 <h3>เอกสารภายใน{{request.user.profile.dept}}</h3>
@@ -13,17 +14,26 @@
         <th scope="col">ประเภท</th>
         <th scope="col">หน่วยงาน</th>
         <th scope="col">วันที่</th>
+        <th scope="col">นำเข้าโดย</th>
         <th scope="col">#</th>
       </tr>
     </thead>
     {% for doc in unread_docs %}
     <tbody>
       <tr>
-        <td><a href="{{doc.fileURL}}">{{doc.doc_mtno}}</a></td>
+        <td>
+          {% if doc.fileURL != '#' %}
+          <a href="{{doc.fileURL}}">{{doc.doc_mtno}}</a>
+          <img src="{% static 'images/sign-document-64.png' %}" height="25"/>
+          {% else %}
+          {{doc.doc_mtno}}
+          {% endif %}
+        </td>
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
         <td>{{doc.doc_dept}}</td>
         <td>{{doc.doc_date|date:'d/m/Y'}}</td>
+        <td>{{doc.upload_by.user.first_name}}</td>
         <td>
             <button type="button" class="btn btn-success btn-sm accept-doc mb-1 mb-md-1" data-action="accept" data-document="{{doc.id}}">ทราบ</button>
             <a href="{% url 'docdetail' doc.id %}" class="btn btn-info btn-sm mb-1 mb-md-1" role="button">รายละเอียด</a>

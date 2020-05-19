@@ -24,13 +24,21 @@
             <td>หน่วยงาน</td><td>{{doc.doc_dept}}</td>
         </tr>
         <tr>
-            <td>ไฟล์เอกสาร</td><td>Data#2</td>
+            <td>ไฟล์เอกสาร</td><td>
+              {% if doc.fileURL != '#' %}
+              <a href="{{doc.fileURL}}">
+                <img src="{% static 'images/sign-document-64.png' %}" height="25"/>
+              </a>
+               {% else %}
+               ไม่มีไฟล์เอกสาร
+               {% endif %}
+            </td>
         </tr>
         <tr>
             <td>ประเภท</td><td>{{doc.type_code.type_desc}}</td>
         </tr>
         <tr>
-            <td>นำเข้าวันที่</td><td>{{doc.last_update|date:'d/m/Y'}}</td>
+            <td>นำเข้าวันที่</td><td>{{doc.last_update|date:'d/m/Y'}} โดย {{doc.upload_by.user.first_name}}</td>
         </tr>
         </table>
         <button class="element-font" onclick="goBack()">กลับหน้าที่แล้ว</button>
