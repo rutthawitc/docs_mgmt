@@ -19,7 +19,7 @@
     {% for doc in unread_docs %}
     <tbody>
       <tr>
-        <td>{{doc.doc_mtno}}</td>
+        <td><a href="{{doc.fileURL}}">{{doc.doc_mtno}}</a></td>
         <td>{{doc.doc_title}}</td>
         <td>{{doc.type_code.type_desc}}</td>
         <td>{{doc.doc_dept}}</td>
