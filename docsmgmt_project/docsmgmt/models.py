@@ -24,6 +24,24 @@ class UserSection(models.Model):
     def __str__(self):
         return self.section_title
 
+#User Profile
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
+    title = models.CharField(max_length=100, null=True, blank=True)
+    employee_id = models.CharField(max_length=12)
+    dept = models.ForeignKey(UserDepartment, on_delete=models.SET_NULL, null=True, blank=True)
+    sect = models.ForeignKey(UserSection, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+#This will create a userprofile each time a user is saved if it is created. You can then use
+#user.get_profile().whatever    
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        profile, created = UserProfile.objects.get_or_create(user=instance)
+post_save.connect(create_user_profile, sender=User)
+
+
 class RefDocumentType(models.Model):
     type_code = models.CharField(max_length=10)
     type_desc = models.CharField(max_length=150, blank=True, null=True)
@@ -55,6 +73,7 @@ class Documents(models.Model):
     doc_date = models.DateField(auto_now=False, null=True, blank=True)
     doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, default=UserDepartment.DEFAULT_PK)
     doc_file = models.FileField(upload_to=path_and_rename, max_length=255, null=True, blank=True)
+    upload_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -77,22 +96,7 @@ class DocumentSections(models.Model):
     def __str__(self):
         return self.section_title
 
-#User Profile
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
-    title = models.CharField(max_length=100, null=True, blank=True)
-    employee_id = models.CharField(max_length=12)
-    dept = models.ForeignKey(UserDepartment, on_delete=models.SET_NULL, null=True, blank=True)
-    sect = models.ForeignKey(UserSection, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return self.user.username
-#This will create a userprofile each time a user is saved if it is created. You can then use
-#user.get_profile().whatever    
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        profile, created = UserProfile.objects.get_or_create(user=instance)
-post_save.connect(create_user_profile, sender=User)
 
 #Store a additional note for Document
 class Comments(models.Model):
