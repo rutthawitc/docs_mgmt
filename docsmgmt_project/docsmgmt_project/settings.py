@@ -25,7 +25,7 @@ SECRET_KEY = 'jbqjx@$0v329jm%-ilhya*ms$2@8jo*k7bad$zz4fzt9!$0li$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -137,4 +137,5 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+#for Heroku
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
