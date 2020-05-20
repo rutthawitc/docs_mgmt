@@ -1,1 +1,1 @@
-web: qunicorn app:app
+web: gunicorn bootcamp.wsgi --log-file -
