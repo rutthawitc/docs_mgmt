@@ -97,7 +97,6 @@ class DocumentSections(models.Model):
         return self.section_title
 
 
-
 #Store a additional note for Document
 class Comments(models.Model):
     doc_no = models.ForeignKey(Documents, on_delete=models.CASCADE)

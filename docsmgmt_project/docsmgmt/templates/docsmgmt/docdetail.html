@@ -5,8 +5,8 @@
 <hr>
 <div class="row justify-content-md-center">
     <div class="col"></div>
-    <div class="col-6">
-        <h4>รายละเอียดเอกสาร </h4>
+    <div class="col-5">
+        <h4>รายละเอียดเอกสาร</h4>
         <table class="table table-striped table-bordered">
         <tr>
             <td>เลขที่</td><td>{{doc.doc_mtno}}</td>
@@ -40,41 +40,44 @@
         <tr>
             <td>นำเข้าวันที่</td><td>{{doc.last_update|date:'d/m/Y'}} โดย {{doc.upload_by.user.first_name}}</td>
         </tr>
+        <tr>
+          <td>สถานะ</td>
+          <td>
+            {% if isaccepted is not None %}
+            <h6><strong>รับทราบเอกสารแล้ว</strong></h6>
+            {% else %}
+            <button type="button" class="btn btn-success btn-sm accept-doc mb-1 mb-md-1" data-action="accept" data-document="{{doc.id}}" onclick="disableButton(this)">ทราบ</button>
+            {% endif %}
+          </td>
+        </tr>
         </table>
         <button class="element-font" onclick="goBack()">กลับหน้าที่แล้ว</button>
     </div>
-    <div class="col-5">
+    <div class="col-6">
        <h4>บันทึกเพิ่มเติม</h4>
        <table class="table table-striped">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">บันทึกเพิ่มเติม</th>
+            <th scope="col">โดย</th>
+            <th scope="col">วันที่</th>
           </tr>
         </thead>
         <tbody>
+          {% for cm in comments %}
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+            <td>{{ cm.comment }}</td>
+            <td>{{ cm.user.user.first_name }}</td>
+            <td>{{ cm.comment_date|date:'d/m/Y - H:m:s' }}</td> 
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
+      <div class="form-group">
+        <textarea class="form-control rounded-0" id="memo" rows="3" placeholder="บันทึกเพิ่มเติม"></textarea>
+      </div>
+      <button type="button" class="btn btn-success btn-sm add-comment mb-1 mb-md-1" data-action="comment" data-document="{{doc.id}}">เพิ่มบันทึก</button>
+      </textarea>
     </div>
   </div>
 </div>

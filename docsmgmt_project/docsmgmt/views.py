@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Documents, UserProfile, UserDepartment, Accepted
+from .models import Documents, UserProfile, UserDepartment, Accepted, Comments
 from django.http import JsonResponse
 
 from django.contrib.auth.models import User
@@ -10,8 +10,9 @@ from django.shortcuts import HttpResponseRedirect
 from django.db.models import Q
 import json
 from django.views.generic import ListView, CreateView, UpdateView
-from django.urls import reverse_lazy
+#from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 @login_required
@@ -119,9 +120,35 @@ def DocAccepted(request):
 @login_required
 def DocDetail(request, doc_pk):
     doc = Documents.objects.get(id=doc_pk)
+    comments = Comments.objects.filter(doc_no=doc.id)
+    try:
+        isaccepted = Accepted.objects.get(doc_no=doc.id, user=request.user.id)
+    except Accepted.DoesNotExist:
+        isaccepted = None
 
-    context = {'doc':doc}
+    context = {'doc':doc, 'isaccepted':isaccepted, 'comments':comments}
     return render(request, 'docsmgmt/docdetail.html', context)
+
+def getcomment(request):
+    data = json.loads(request.body)
+    documentId = data['documentId']
+    action = data['action']
+    text = data['memo']
+    print('Document Id:', documentId)
+    #print('Action:', action)
+    #print('text:', text)
+
+    #Set values
+    user = request.user.profile
+    document = Documents.objects.get(id=documentId)
+
+    print(user)
+    print('Doc ID :',document.id)
+    print('text:', text)
+    comment = Comments.objects.create(user=user, doc_no=document, comment=text)
+    comment.save()
+
+    return JsonResponse('Commented', safe=False)
 
 def loginuser(request):
     username_value = ''
@@ -147,10 +174,10 @@ def logoutuser(request):
         logout(request)
         return HttpResponseRedirect('/login/')
 
-class DocumentView(CreateView):
-    model = Documents
-    fields = ('type_code', 'doc_mtno', 'doc_title', 'doc_desc', 'doc_date', 'doc_dept', 'doc_file')
-    success_url = reverse_lazy('home')
+#class DocumentView(CreateView):
+#    model = Documents
+#    fields = ('type_code', 'doc_mtno', 'doc_title', 'doc_desc', 'doc_date', 'doc_dept', 'doc_file')
+#    success_url = reverse_lazy('home')
 
 
 
