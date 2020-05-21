@@ -7,6 +7,8 @@ from uuid import uuid4
 
 # Create your models here.
 class UserDepartment(models.Model):
+    class Meta:
+        verbose_name_plural = "2.User Department"
     DEFAULT_PK=3
     department_code = models.CharField(max_length=35)
     department_title = models.CharField(max_length=150)
@@ -16,6 +18,9 @@ class UserDepartment(models.Model):
         return self.department_title
 
 class UserSection(models.Model):
+    class Meta:
+        verbose_name_plural = "3.User Sections"
+    
     department_code = models.ForeignKey(UserDepartment, on_delete=models.CASCADE)
     section_code = models.CharField(max_length=35)
     section_title = models.CharField(max_length=150)
@@ -26,6 +31,9 @@ class UserSection(models.Model):
 
 #User Profile
 class UserProfile(models.Model):
+    class Meta:
+        verbose_name_plural = "4.User Profile"
+
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
     title = models.CharField(max_length=100, null=True, blank=True)
     employee_id = models.CharField(max_length=12)
@@ -43,6 +51,9 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class RefDocumentType(models.Model):
+    class Meta:
+        verbose_name_plural = "7.Docs Type"
+        
     type_code = models.CharField(max_length=10)
     type_desc = models.CharField(max_length=150, blank=True, null=True)
 
@@ -64,7 +75,7 @@ def path_and_rename(instance, filename):
 
 class Documents(models.Model):
     class Meta:
-        verbose_name_plural = "1. Documents"
+        verbose_name_plural = "1.Documents"
     type_code = models.ForeignKey(RefDocumentType, on_delete=models.CASCADE)
     access_count = models.IntegerField(null=True, blank=True)
     doc_mtno = models.CharField(max_length=50,blank=True, null=True)
@@ -99,6 +110,9 @@ class DocumentSections(models.Model):
 
 #Store a additional note for Document
 class Comments(models.Model):
+    class Meta:
+        verbose_name_plural = "5.Comments"
+
     doc_no = models.ForeignKey(Documents, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
@@ -108,6 +122,8 @@ class Comments(models.Model):
         return self.doc_no.doc_title
 
 class Accepted(models.Model):
+    class Meta:
+        verbose_name_plural = "6.Accepted"
     doc_no = models.ForeignKey(Documents, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     is_accepted = models.BooleanField(default=False)
