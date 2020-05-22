@@ -57,18 +57,25 @@ def ShowUnreadDocs(request):
         Q(user__user_id=request.user.profile.id)
     ).values_list('doc_no',flat=True)
     
-    #Filter Unread (UnAccepted) from Readed Resualt
-    #Filter by userID
-    #unread_docs = Documents.objects.exclude(id__in=readed_docs)
-
-    #Test
-    unread_docs = Documents.objects.filter(
+    #Filter unread from readed_docsQuerySet
+    unread_list = Documents.objects.filter(
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
-    ).exclude(id__in=readed_docs)
+    ).exclude(id__in=readed_docs).order_by('id')
+    docscount = unread_list.count()
+
+    #Paginator
+    page = request.GET.get('page', 1)
+    paginator = Paginator(unread_list, 15)
+    try:
+        docs = paginator.page(page)
+    except PageNotAnInteger:
+        docs = paginator.page(1)
+    except EmptyPage:
+        docs = paginator.page(paginator.num_pages)
 
     error ="ไม่มีเอกสารใหม่"
-    context = {'error':error, 'unread_docs':unread_docs }
+    context = {'error':error, 'docs':docs, 'docscount':docscount }
     return render(request, 'docsmgmt/unread.html', context)
 
 @login_required

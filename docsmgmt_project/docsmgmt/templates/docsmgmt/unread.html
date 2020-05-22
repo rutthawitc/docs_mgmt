@@ -4,8 +4,8 @@
 <div class='container'>
 <h3>เอกสารภายใน{{request.user.profile.dept}}</h3>
 <hr>
-{% if unread_docs %}
-<h4>เอกสารทั้งหมด {{ unread_docs.count }} ฉบับ</h4>
+{% if docscount %}
+<h4>เอกสารทั้งหมด {{ docscount }} ฉบับ</h4>
 <table class="table table-striped table-bordered">
     <thead>
       <tr>
@@ -18,7 +18,7 @@
         <th scope="col">#</th>
       </tr>
     </thead>
-    {% for doc in unread_docs %}
+    {% for doc in docs %}
     <tbody>
       <tr>
         <td>
@@ -43,6 +43,29 @@
     </tbody>
     {% endfor %}
   </table>
+<!--Paginator-->
+{% if docs.has_other_pages %}
+<ul class="pagination">
+  {% if docs.has_previous %}
+    <li><a href="?page={{ docs.previous_page_number }}">&laquo;</a></li>
+  {% else %}
+    <li class="disabled"><span>&laquo;</span></li>
+  {% endif %}
+  {% for i in docs.paginator.page_range %}
+    {% if docs.number == i %}
+      <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+    {% else %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if docs.has_next %}
+    <li><a href="?page={{ docs.next_page_number }}">&raquo;</a></li>
+  {% else %}
+    <li class="disabled"><span>&raquo;</span></li>
+  {% endif %}
+</ul>
+{% endif %}
+<!--End of Paginator-->
   {% else %}
   <div class="alert alert-success text-center element-font" role="alert">
      {{ error }}
