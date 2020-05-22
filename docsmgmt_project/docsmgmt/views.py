@@ -38,7 +38,7 @@ def Home(request):
     unread_count = unread_docs.count()
 
     context = {'unread_count':unread_count, 'readed_count':readed_count}
-    print(context)
+    #print(context)
     return render(request, 'docsmgmt/home.html', context)
 
 @login_required

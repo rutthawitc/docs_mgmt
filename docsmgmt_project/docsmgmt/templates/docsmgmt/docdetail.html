@@ -26,11 +26,16 @@
         <tr>
             <td>ไฟล์เอกสาร</td><td>
               {% if doc.fileURL != '#' %}
-              <a href="{{doc.fileURL}}">
+              <p class="alert alert-info" role="alert">
+                <a href="{{doc.fileURL}}" >
                 <img src="{% static 'images/sign-document-64.png' %}" height="25"/>
+                คลิกเพื่อโหลด
               </a>
+              </p>
                {% else %}
+               <p class="alert alert-success" role="alert">
                ไม่มีไฟล์เอกสาร
+              </p>
                {% endif %}
             </td>
         </tr>
@@ -46,6 +51,7 @@
             {% if isaccepted is not None %}
             <h6><strong>รับทราบเอกสารแล้ว</strong></h6>
             {% else %}
+            <p class="alert alert-danger" role="alert">ยังไม่ได้รับทราบเอกสารนี้</p>
             <button type="button" class="btn btn-success btn-sm accept-doc mb-1 mb-md-1" data-action="accept" data-document="{{doc.id}}" onclick="disableButton(this)">ทราบ</button>
             {% endif %}
           </td>
