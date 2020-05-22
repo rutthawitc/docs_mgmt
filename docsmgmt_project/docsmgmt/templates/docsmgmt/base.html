@@ -80,11 +80,12 @@
           {% if user.is_authenticated %}
           <img src="{% static 'images/icons8-person-24.png' %}" height="20"/><h8>&nbsp;{{request.user.first_name}} ({{request.user.username}})</h8>&nbsp;
           <a href="{% url 'logoutuser' %}" onclick="$('#signOutBtn').click()" class="nav-link element-font">Logout</a>
-          {% else %}
-          <a class="nav-link element-font" href="{% url 'loginuser' %}">Login</a>
-          {% endif %}
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          {% else %}
+          <img src="{% static 'images/icons8-login-30.png' %}" alt="login" height="25">
+          <a class="nav-link element-font" href="{% url 'loginuser' %}">Login</a>
+          {% endif %}
         </form>
       </div>
     </nav>
