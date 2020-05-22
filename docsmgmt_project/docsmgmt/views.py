@@ -13,6 +13,9 @@ from django.views.generic import ListView, CreateView, UpdateView
 #from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+#Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 # Create your views here.
 @login_required
@@ -72,29 +75,49 @@ def ShowUnreadDocs(request):
 #Show Accepted Documents filter by User ID! 
 def ShowAcceptedDocs(request):
     #Find Readed - QuerySet
-    readed_docs = Accepted.objects.filter(
+    accepted_list = Accepted.objects.filter(
         Q(is_accepted=True) &
         Q(user__user_id=request.user.profile.id)
-    )
+    ).order_by('-accepted_date')
+    acceptedcount = accepted_list.count()
+    #Paginator
+    page = request.GET.get('page', 1)
+    paginator = Paginator(accepted_list, 15)
+    try:
+        docs = paginator.page(page)
+    except PageNotAnInteger:
+        docs = paginator.page(1)
+    except EmptyPage:
+        docs = paginator.page(paginator.num_pages)
 
     error ={"No data!"}
-    context = {'error':error, 'readed_docs':readed_docs }
+    context = {'error':error, 'docs':docs, 'acceptedcount':acceptedcount }
     return render(request, 'docsmgmt/showaccepted.html', context)
 
 @login_required
 def ShowDocsByDept(request):
-    #Original filter
-    #docs_dept = Documents.objects.filter(doc_dept=request.user.profile.dept)
-    #all_docs = Documents.objects.filter(doc_dept__id=3)
-
-    #Complete -QuerySet
-    docs_dept = Documents.objects.filter(
+    #Complete -QuerySet-
+    docs_list = Documents.objects.filter(
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
-    )
+    ).order_by('-doc_dept__id')
+    docscount = docs_list.count()
+    #Paginator
+    page = request.GET.get('page', 1)
+    paginator = Paginator(docs_list, 15)
+    #-----DEBUG-------
+    #print(paginator.count)
+    #print(paginator.num_pages)
+    #print(paginator.page_range)
+    try:
+        docs = paginator.page(page)
+    except PageNotAnInteger:
+        docs = paginator.page(1)
+    except EmptyPage:
+        docs = paginator.page(paginator.num_pages)
 
     error ={"No data!"}
-    context = {'docs_dept':docs_dept, 'error':error}
+    context = {'docs':docs, 'error':error, 'docscount':docscount}
     return render(request, 'docsmgmt/docsbydept.html', context)
 
 @login_required
@@ -102,8 +125,9 @@ def DocAccepted(request):
     data = json.loads(request.body)
     documentId = data['documentId']
     action = data['action']
-    print('Document Id:', documentId)
-    print('Action:', action)
+    #--DEBUG---
+    #print('Document Id:', documentId)
+    #print('Action:', action)
 
     #Set values
     user = request.user.profile
@@ -111,9 +135,9 @@ def DocAccepted(request):
 
     accepted = Accepted.objects.create(user=user, doc_no=document, is_accepted=True)
     accepted.save()
-
-    print('User:', user)
-    print('Document ID:', document)
+    #--DEBUG---
+    #print('User:', user)
+    #print('Document ID:', document)
 
     return JsonResponse('Accepted', safe=False)
 
@@ -134,7 +158,8 @@ def getcomment(request):
     documentId = data['documentId']
     action = data['action']
     text = data['memo']
-    print('Document Id:', documentId)
+    #--DEBUG---
+    #print('Document Id:', documentId)
     #print('Action:', action)
     #print('text:', text)
 
