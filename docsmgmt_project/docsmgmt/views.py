@@ -208,6 +208,7 @@ def logoutuser(request):
         return HttpResponseRedirect('/login/')
 
 #Change password
+@login_required
 def change_password(request):
     msg=''
     if request.method == 'POST':
@@ -227,6 +228,32 @@ def change_password(request):
         'form': form,
         'msg':msg,
     })
+
+@login_required #User must login first
+def searchdocs(request):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        #print('Data:', data)
+        search_title = data.get('search')
+        if search_title == '':
+            return redirect('searchdocs')
+        try:
+            res = Documents.objects.filter(
+                Q(doc_title__icontains=search_title) |
+                Q(doc_mtno__icontains=search_title) &
+                Q(doc_dept__id=3) |
+                Q(doc_dept=request.user.profile.dept)
+            ).order_by('-id')
+            #print(request.user.profile.dept)
+            rescount = res.count()
+            context = {'res': res, 'src': 'founded', 'rescount':rescount}
+        except Documents.DoesNotExist:
+            context = {'res': 'Has no resualt', 'src': 'notfound'}
+            #res = 'Has no resualt'
+            #print('RES:', context)
+
+        return render(request, 'docsmgmt/searchdoc.html', context)
+    return render(request, 'docsmgmt/searchdoc.html')
 
 #class DocumentView(CreateView):
 #    model = Documents

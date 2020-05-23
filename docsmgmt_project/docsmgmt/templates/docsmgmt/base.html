@@ -16,6 +16,7 @@
 
     <!--Fav icon-->
     <link rel="shortcut icon" type="image/png" href="{% static 'images/statistic-document.png' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!--getToken-->
     <script type="text/javascript">
       var user= '{{request.user}}'
@@ -74,12 +75,16 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'showbydept' %}">All Documents</a>
           </li>
+          <form class="form-inline my-2 my-lg-0 nav-font" method="POST" action="{% url 'searchdocs' %}">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-outline-success my-2 my-sm-0 btn-md" type="submit">Search</button>
+          </form>
         </ul>
-        <form class="form-inline my-2 my-lg-0 nav-font">
-          
-          {% if user.is_authenticated %}
-          <img src="{% static 'images/icons8-person-24.png' %}" height="20"/>
 
+          {% if user.is_authenticated %}
+          
+          <img src="{% static 'images/icons8-person-24.png' %}" height="20"/>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               &nbsp;{{request.user.first_name}} ({{request.user.username}})&nbsp;
@@ -88,16 +93,12 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'change_password' %}">เปลี่ยนรหัสผ่าน</a>
           </li>
-
-          
           <a href="{% url 'logoutuser' %}" onclick="$('#signOutBtn').click()" class="nav-link element-font">Logout</a>
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           {% else %}
           <img src="{% static 'images/icons8-login-30.png' %}" alt="login" height="25">
           <a class="nav-link element-font" href="{% url 'loginuser' %}">Login</a>
           {% endif %}
-        </form>
+
       </div>
     </nav>
     <div class="container"> <p class="text-center"><h3>ระบบเอกสารอิเล็คทรอนิคส์ กปภ.ข.๖</h3></p></div>
