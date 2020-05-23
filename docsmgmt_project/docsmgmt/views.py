@@ -153,12 +153,13 @@ def DocAccepted(request):
 def DocDetail(request, doc_pk):
     doc = Documents.objects.get(id=doc_pk)
     comments = Comments.objects.filter(doc_no=doc.id)
+    usercount = Accepted.objects.filter(doc_no=doc_pk, user__dept=request.user.profile.dept, is_accepted=True).count()
     try:
         isaccepted = Accepted.objects.get(doc_no=doc.id, user=request.user.id)
     except Accepted.DoesNotExist:
         isaccepted = None
 
-    context = {'doc':doc, 'isaccepted':isaccepted, 'comments':comments}
+    context = {'doc':doc, 'isaccepted':isaccepted, 'comments':comments, 'usercount':usercount}
     return render(request, 'docsmgmt/docdetail.html', context)
 
 def getcomment(request):
@@ -254,6 +255,25 @@ def searchdocs(request):
 
         return render(request, 'docsmgmt/searchdoc.html', context)
     return render(request, 'docsmgmt/searchdoc.html')
+
+
+#List Users accepted --> Doc
+@login_required
+def listusers_accepted(request, doc_pk):
+    context ={}
+    doc = Documents.objects.get(id=doc_pk)
+    user_list = Accepted.objects.filter(doc_no=doc_pk, user__dept=request.user.profile.dept, is_accepted=True).order_by('accepted_date')
+    usercount = user_list.count()
+
+    print(user_list)
+    print(usercount)
+    context = {'user_list':user_list, 'usercount':usercount, 'doc':doc}
+    return render(request, 'docsmgmt/listaccepted.html', context)
+
+
+
+
+
 
 #class DocumentView(CreateView):
 #    model = Documents

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.conf.urls import url
-from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs, loginuser, logoutuser, getcomment, change_password, searchdocs
+from .views import Home, ShowAllDocuments, ShowDocsByDept, DocAccepted, DocDetail, ShowUnreadDocs, ShowAcceptedDocs, loginuser, logoutuser, getcomment, change_password, searchdocs, listusers_accepted
 
 urlpatterns = [
     path('', Home, name='home'),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('logout/', logoutuser, name='logoutuser'),
     path('getcomment/', getcomment, name='getcomment'),
     path('searchdocs/', searchdocs, name='searchdocs'),
+    path('listaccepted/<int:doc_pk>', listusers_accepted, name='listaccepted'),
     url(r'^password/$', change_password, name='change_password'),
 ]

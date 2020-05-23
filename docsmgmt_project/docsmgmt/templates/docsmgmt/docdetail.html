@@ -46,6 +46,9 @@
             <td>นำเข้าวันที่</td><td>{{doc.last_update|date:'d/m/Y'}} โดย {{doc.upload_by.user.first_name}}</td>
         </tr>
         <tr>
+          <td>รับทราบแล้วจำนวน</td><td>{{usercount}} คน &nbsp;<a href="{% url 'listaccepted' doc.id %}">รายชื่อ</a></td>
+        </tr>
+        <tr>
           <td>สถานะ</td>
           <td>
             {% if isaccepted is not None %}
@@ -59,7 +62,7 @@
           </td>
         </tr>
         </table>
-        <button class="element-font" onclick="goBack()">กลับหน้าที่แล้ว</button>
+        <button class="element-font btn btn-success btn-sm" onclick="goBack()">กลับหน้าที่แล้ว</button>
     </div>
     <div class="col-6">
        <h4>บันทึกเพิ่มเติม</h4>
