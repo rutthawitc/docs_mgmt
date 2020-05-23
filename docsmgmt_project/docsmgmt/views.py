@@ -61,7 +61,7 @@ def ShowUnreadDocs(request):
     unread_list = Documents.objects.filter(
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
-    ).exclude(id__in=readed_docs).order_by('id')
+    ).exclude(id__in=readed_docs).order_by('-id')
     docscount = unread_list.count()
 
     #Paginator

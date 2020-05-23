@@ -13,4 +13,3 @@ urlpatterns = [
     path('logout/', logoutuser, name='logoutuser'),
     path('getcomment/', getcomment, name='getcomment')
 ]
-
