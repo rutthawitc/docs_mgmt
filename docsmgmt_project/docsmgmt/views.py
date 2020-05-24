@@ -176,9 +176,10 @@ def getcomment(request):
     user = request.user.profile
     document = Documents.objects.get(id=documentId)
 
-    print(user)
-    print('Doc ID :',document.id)
-    print('text:', text)
+    #DEBUG
+    #print(user)
+    #print('Doc ID :',document.id)
+    #print('text:', text)
     comment = Comments.objects.create(user=user, doc_no=document, comment=text)
     comment.save()
 
