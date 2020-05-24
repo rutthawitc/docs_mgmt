@@ -265,8 +265,9 @@ def listusers_accepted(request, doc_pk):
     user_list = Accepted.objects.filter(doc_no=doc_pk, user__dept=request.user.profile.dept, is_accepted=True).order_by('accepted_date')
     usercount = user_list.count()
 
-    print(user_list)
-    print(usercount)
+    #DEBUG
+    #print(user_list)
+    #print(usercount)
     context = {'user_list':user_list, 'usercount':usercount, 'doc':doc}
     return render(request, 'docsmgmt/listaccepted.html', context)
 
