@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 import datetime
 import os
 from uuid import uuid4
+from django.dispatch import receiver
 
 # Create your models here.
 class UserDepartment(models.Model):
@@ -33,17 +34,26 @@ class UserSection(models.Model):
 class UserProfile(models.Model):
     class Meta:
         verbose_name_plural = "4.User Profile"
+    #Role choice
+    EMPLOYEE = 1
+    SUPERVISOR = 2
+    ROLE_CHOICES = (
+        (EMPLOYEE, 'พนักงาน'),
+        (SUPERVISOR, 'หัวหน้างาน'),
+    )
 
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
     title = models.CharField(max_length=100, null=True, blank=True)
     employee_id = models.CharField(max_length=12)
     dept = models.ForeignKey(UserDepartment, on_delete=models.SET_NULL, null=True, blank=True)
     sect = models.ForeignKey(UserSection, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
 #This will create a userprofile each time a user is saved if it is created. You can then use
-#user.get_profile().whatever    
+#user.get_profile().whatever  
+@receiver(post_save, sender=User)  #New
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile, created = UserProfile.objects.get_or_create(user=instance)
@@ -76,7 +86,18 @@ def path_and_rename(instance, filename):
 class Documents(models.Model):
     class Meta:
         verbose_name_plural = "1.Documents"
+    #Role choice
+    EMPLOYEE = 1
+    SUPERVISOR = 2
+    ALLCANREAD = 3
+    ROLE_CHOICES = (
+        (EMPLOYEE, 'พนักงาน'),
+        (SUPERVISOR, 'หัวหน้างาน'),
+        (ALLCANREAD, 'พนักงานและหัวหน้างาน'),
+    )
+
     type_code = models.ForeignKey(RefDocumentType, on_delete=models.CASCADE)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
     access_count = models.IntegerField(null=True, blank=True)
     doc_mtno = models.CharField(max_length=50,blank=True, null=True)
     doc_title = models.CharField(max_length=150)
