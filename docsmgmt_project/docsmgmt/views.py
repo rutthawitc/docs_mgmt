@@ -28,17 +28,19 @@ def Home(request):
         Q(user__user_id=request.user.profile.id)
     ).values_list('doc_no',flat=True)
 
-    readed_count = readed_docs.count()
+    #readed_count = readed_docs.count()
 
     #unread
     unread_docs = Documents.objects.filter(
+        Q(role=request.user.profile.role) &
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
     ).exclude(id__in=readed_docs)
 
     unread_count = unread_docs.count()
 
-    context = {'unread_count':unread_count, 'readed_count':readed_count}
+    #context = {'unread_count':unread_count, 'readed_count':readed_count}
+    context = {'unread_count':unread_count}
     #print(context)
     return render(request, 'docsmgmt/home.html', context)
 
@@ -60,10 +62,17 @@ def ShowUnreadDocs(request):
     
     #Filter unread from readed_docsQuerySet
     unread_list = Documents.objects.filter(
+        #Check user role
+        Q(role=request.user.profile.role) &
+        #Org queryset
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
     ).exclude(id__in=readed_docs).order_by('-id')
     docscount = unread_list.count()
+
+    #DEBUG
+    print(request.user.profile.role)
+    print(unread_list.values_list('role'))
 
     #Paginator
     page = request.GET.get('page', 1)
@@ -108,7 +117,7 @@ def ShowDocsByDept(request):
     docs_list = Documents.objects.filter(
         Q(doc_dept=request.user.profile.dept) |
         Q(doc_dept__id=3)
-    ).order_by('-doc_dept__id')
+    ).order_by('-doc_dept__id', 'upload_date')
     docscount = docs_list.count()
     #Paginator
     page = request.GET.get('page', 1)

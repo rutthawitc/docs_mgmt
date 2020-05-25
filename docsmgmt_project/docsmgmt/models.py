@@ -97,15 +97,16 @@ class Documents(models.Model):
     )
 
     type_code = models.ForeignKey(RefDocumentType, on_delete=models.CASCADE)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True, default=ALLCANREAD)
     access_count = models.IntegerField(null=True, blank=True)
     doc_mtno = models.CharField(max_length=50,blank=True, null=True)
     doc_title = models.CharField(max_length=150)
     doc_desc = models.CharField(max_length=150, blank=True, null=True)
     doc_date = models.DateField(auto_now=False, null=True, blank=True)
-    doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, default=UserDepartment.DEFAULT_PK)
+    doc_dept = models.ForeignKey(UserDepartment, on_delete=models.CASCADE, null=True, blank=True)
     doc_file = models.FileField(upload_to=path_and_rename, max_length=255, null=True, blank=True)
     upload_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
+    upload_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

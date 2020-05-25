@@ -26,10 +26,11 @@ class CustomUserAdmin(UserAdmin):
 
 
 class DocumentsAdmin(admin.ModelAdmin):
-    exclude = ('upload_by', 'access_count')
+    exclude = ('upload_by', 'access_count', 'doc_dept')
 
     def save_model(self, request, obj, form, change):
         obj.upload_by = request.user.profile
+        obj.doc_dept = request.user.profile.dept
         obj.save()
 
 admin.site.register(UserDepartment)
