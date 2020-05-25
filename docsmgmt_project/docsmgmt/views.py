@@ -71,8 +71,8 @@ def ShowUnreadDocs(request):
     docscount = unread_list.count()
 
     #DEBUG
-    print(request.user.profile.role)
-    print(unread_list.values_list('role'))
+    #print(request.user.profile.role)
+    #print(unread_list.values_list('role'))
 
     #Paginator
     page = request.GET.get('page', 1)
@@ -201,10 +201,11 @@ def loginuser(request):
         return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm()})
     else:
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-
-        print(request.POST['username'])
-        print(request.POST['password'])
-        print(user)
+        
+        #DEBUG
+        #print(request.POST['username'])
+        #print(request.POST['password'])
+        #print(user)
         if user is None:
             return render(request, 'docsmgmt/login.html', {'form':AuthenticationForm(), 'error':'Username and password did not match'})
         else:
