@@ -40,9 +40,8 @@
     </script>
     <script>
       function goBack() {
-       //window.history.back();
+        window.history.back();
         //location.reload();
-        window.location.reload(history.back());
           }
     </script>
     <script type="text/javascript">
@@ -85,16 +84,9 @@
         </ul>
 
           {% if user.is_authenticated %}
-          
           <img src="{% static 'images/icons8-person-24.png' %}" height="20"/>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              &nbsp;{{request.user.first_name}} ({{request.user.username}})&nbsp;
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'change_password' %}">เปลี่ยนรหัสผ่าน</a>
-          </li>
+          &nbsp;{{request.user.first_name}}({{request.user.username}})
+          <a class="nav-link element-font" href="{% url 'change_password' %}">/ เปลี่ยนรหัสผ่าน / </a>
           <a href="{% url 'logoutuser' %}" onclick="$('#signOutBtn').click()" class="nav-link element-font">Logout</a>
           {% else %}
           <img src="{% static 'images/icons8-login-30.png' %}" alt="login" height="25">

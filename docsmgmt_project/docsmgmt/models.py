@@ -39,7 +39,7 @@ class UserProfile(models.Model):
     SUPERVISOR = 2
     ROLE_CHOICES = (
         (EMPLOYEE, 'พนักงาน'),
-        (SUPERVISOR, 'หัวหน้างาน'),
+        (SUPERVISOR, 'หัวหน้างาน/ผอ.กอง'),
     )
 
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')

@@ -25,19 +25,25 @@ def Home(request):
     #readed
     readed_docs = Accepted.objects.filter(
         Q(is_accepted=True) &
-        Q(user__user_id=request.user.profile.id)
-    ).values_list('doc_no',flat=True)
+        Q(user__user_id=request.user.profile.id)).values_list('doc_no',flat=True)
 
     #readed_count = readed_docs.count()
 
-    #unread
-    unread_docs = Documents.objects.filter(
-        Q(role=request.user.profile.role) &
-        Q(doc_dept=request.user.profile.dept) |
-        Q(doc_dept__id=3)
-    ).exclude(id__in=readed_docs)
+    #----------Check Role QuerySet---------
+    #----Edited on --25-May-2020----
+    if (request.user.profile.role == 1):
+        unread_list = Documents.objects.filter(
+            Q(role=1) |
+            Q(role=3) &
+            Q(doc_dept=request.user.profile.dept)
+        ).exclude(id__in=readed_docs).order_by('-id')
+        docscount = unread_list.count()
+    else:
+        unread_list = Documents.objects.filter(
+            Q(doc_dept=request.user.profile.dept)
+        ).exclude(id__in=readed_docs).order_by('-id')
 
-    unread_count = unread_docs.count()
+    unread_count = unread_list.count()
 
     #context = {'unread_count':unread_count, 'readed_count':readed_count}
     context = {'unread_count':unread_count}
@@ -59,20 +65,28 @@ def ShowUnreadDocs(request):
         Q(is_accepted=True) &
         Q(user__user_id=request.user.profile.id)
     ).values_list('doc_no',flat=True)
-    
-    #Filter unread from readed_docsQuerySet
-    unread_list = Documents.objects.filter(
-        #Check user role
-        Q(role=request.user.profile.role) &
-        #Org queryset
-        Q(doc_dept=request.user.profile.dept) |
-        Q(doc_dept__id=3)
-    ).exclude(id__in=readed_docs).order_by('-id')
-    docscount = unread_list.count()
+
+#----------Check Role QuerySet---------
+#----Edited on --25-May-2020----
+    if (request.user.profile.role == 1):
+        unread_list = Documents.objects.filter(
+            Q(role=1) |
+            Q(role=3) &
+            Q(doc_dept=request.user.profile.dept)
+        ).exclude(id__in=readed_docs).order_by('-id')
+        docscount = unread_list.count()
+    else:
+        unread_list = Documents.objects.filter(
+            Q(doc_dept=request.user.profile.dept)
+        ).exclude(id__in=readed_docs).order_by('-id')
+
+        docscount = unread_list.count() 
+#----------End Query----
 
     #DEBUG
-    #print(request.user.profile.role)
-    #print(unread_list.values_list('role'))
+    #print('User Role', request.user.profile.role)
+    #print('unread_role',unread_list.values_list())
+    #print('User dept',request.user.profile.dept)
 
     #Paginator
     page = request.GET.get('page', 1)
