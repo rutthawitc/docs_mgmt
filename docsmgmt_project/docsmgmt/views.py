@@ -265,14 +265,13 @@ def searchdocs(request):
             return redirect('searchdocs')
         try:
             res = Documents.objects.filter(
-                Q(doc_title__icontains=search_title) |
-                Q(doc_mtno__icontains=search_title) &
-                Q(doc_dept__id=3) |
+                Q(doc_title__contains=search_title) |
+                Q(doc_mtno__contains=search_title) &
                 Q(doc_dept=request.user.profile.dept)
             ).order_by('-id')
             #print(request.user.profile.dept)
             rescount = res.count()
-            context = {'res': res, 'src': 'founded', 'rescount':rescount}
+            context = {'res': res, 'src': 'founded', 'rescount':rescount, 'search_title':search_title}
         except Documents.DoesNotExist:
             context = {'res': 'Has no resualt', 'src': 'notfound'}
             #res = 'Has no resualt'
