@@ -16,13 +16,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 #Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-#pdf export
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.pagesizes import letter, A4
 
 
 # Create your views here.
@@ -301,32 +294,6 @@ def listusers_accepted(request, doc_pk):
     #print(usercount)
     context = {'user_list':user_list, 'usercount':usercount, 'doc':doc}
     return render(request, 'docsmgmt/listaccepted.html', context)
-
-def pdfexport(request):
-    # Create a file-like buffer to receive PDF data.
-    buffer = io.BytesIO()
-
-    # Create the PDF object, using the buffer as its "file."
-    p = canvas.Canvas(buffer,  pagesize=letter)
-
-    #Font
-    pdfmetrics.registerFont(TTFont('THSarabunNew', 'THSarabunNew.ttf'))
-    p.setFont('THSarabunNew',18)
-
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(100, 100, "ทดสอบภาษาไทยครับผม สวัสดีสุนทรภู่")
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
-
-
 
 
 #class DocumentView(CreateView):
